@@ -343,10 +343,6 @@ NetworkManager-tui.x86_64       1:1.18.8-2.el7_9   updates
 
 ## 以上是Yum的基本使用方法，更多高级用法可以通过man yum命令查看。
 
-
-
-
-
 # 什么是wget
 
 ## 1. 简介
@@ -392,26 +388,31 @@ wget https://example.com/file.zip
   ```
   wget --mirror https://example.com/
   ```
+
 - 下载特定类型的文件：使用wget命令可以下载特定类型的文件，例如：
   
   ```
   wget -r -A.pdf https://example.com/
   ```
+
 - 断点续传：使用wget命令可以进行断点续传，例如：
   
   ```
   wget -c https://example.com/file.zip
   ```
+
 - 后台下载：使用wget命令可以在后台进行下载，例如：
   
   ```
   wget -b https://example.com/file.zip
   ```
+
 - 通过代理服务器下载：使用wget命令可以通过代理服务器进行下载，例如：
   
   ```
   wget --proxy-user=username --proxy-password=password https://example.com/file.zip
   ```
+
 - 限速下载：使用wget命令可以限制下载速度，例如：
   
   ```
@@ -539,6 +540,7 @@ HTTP代理
   ```
   wget -e "http_proxy=http://yourproxyaddress:proxyport" http://example.com/file.tar.gz
   ```
+
 - 使用HTTP代理下载并验证代理：
   
   ```
@@ -612,31 +614,37 @@ wget -b http://example.com/file.zip
 使用wget进行数据备份
 
 - 使用wget进行数据备份：
+  
   - 下载整个网站并保存到本地：
     
     ```
     wget --mirror -p --convert-links -P /保存路径 网站URL
     ```
+  
   - 下载指定文件类型：
     
     ```
     wget -r -A 文件类型 -P /保存路径 网站URL
     ```
+  
   - 从FTP服务器下载文件：
     
     ```
     wget ftp://用户名:密码@FTP服务器地址/文件路径
     ```
+  
   - 下载并限速：
     
     ```
     wget --limit-rate=速度 -P /保存路径 网站URL
     ```
+  
   - 下载并重命名：
     
     ```
     wget -O 新文件名 网站URL
     ```
+  
   - 下载并跳过已存在的文件：
     
     ```
@@ -646,8 +654,11 @@ wget -b http://example.com/file.zip
 使用wget进行爬虫- 使用wget进行爬虫的基本命令：`wget -r -np -k <url>`，其中：
 
 - `-r` 表示递归下载，即下载指定URL中的所有链接资源；
+
 - `-np` 表示不下载父级链接，即只下载指定URL中的链接资源；
+
 - `-k` 表示转换链接，即将下载的HTML文件中的链接转换为相对链接，以保证离线浏览时能够正常访问。
+  
   - 示例：使用wget下载百度首页及其相关资源并保存到本地：
     
     ```
@@ -666,11 +677,13 @@ wget -b http://example.com/file.zip
 下载速度的限制
 
 - 下载速度的限制：
+  
   - 使用wget的"--limit-rate"参数可以限制下载速度，例如限制下载速度为100KB/s：
     
     ```
     wget --limit-rate=100k http://example.com/file.zip
     ```
+  
   - 可以使用"--wait"和"--random-wait"参数来控制下载之间的等待时间，避免过多的请求导致服务器拒绝连接。例如等待5秒后再下载：
     
     ```
@@ -722,10 +735,6 @@ wget的未来发展趋势- wget将继续保持其简单、稳定和可靠的特�
 | 安全性       | 加强   |
 | 图形化界面     | 增加   |
 
-
-
-
-
 # sudo是什么
 
 ## 1. 简介
@@ -753,10 +762,6 @@ sudo command
 对用户的执行权限进行更加精细的控制
 
 ## 以上是sudo的相关介绍。
-
-
-
-
 
 # Sudo Bash是什么
 
@@ -862,3 +867,220 @@ sudo bash
 - 输入bash命令进入bash环境：`bash`
 - 此时已经切换至root用户的bash环境，可以执行需要root权限的操作
 - 使用完毕后，输入`exit`命令退出root权限，回到普通用户状态。
+
+
+
+# DNF命令是什么
+
+## 1. DNF命令的概述
+
+DNF命令是什么
+
+- DNF命令是什么：
+
+DNF命令是Fedora和Red Hat Linux系统中的一个软件包管理器，它可以用于安装、升级和卸载软件包。DNF命令是yum命令的替代品，它提供了更好的性能和更多的功能。DNF命令使用RPM包管理系统来管理软件包，它可以自动解决依赖关系，并且可以从多个软件源获取软件包。下面是一些常用的DNF命令示例：
+
+- `dnf install <package>`：安装指定软件包。
+- `dnf update <package>`：升级指定软件包。
+- `dnf remove <package>`：卸载指定软件包。
+- `dnf search <keyword>`：搜索包含指定关键字的软件包。
+- `dnf info <package>`：查看指定软件包的详细信息。
+- `dnf list`：列出所有已安装的软件包。
+- `dnf check-update`：检查是否有可用的软件包更新。
+- `dnf upgrade`：升级所有已安装的软件包。
+- `dnf clean all`：清理所有缓存和未使用的软件包。
+
+DNF命令的作用
+
+- 列出当前系统中已安装的软件包：`dnf list installed`
+- 安装指定软件包：`dnf install <package_name>`
+- 升级所有已安装的软件包：`dnf upgrade`
+- 升级指定软件包：`dnf upgrade <package_name>`
+- 删除指定软件包：`dnf remove <package_name>`
+- 清除缓存：`dnf clean all`
+- 查找软件包：`dnf search <keyword>`
+- 列出所有可用的软件源：`dnf repolist`
+- 启用指定软件源：`dnf config-manager --enable <repository>`
+- 禁用指定软件源：`dnf config-manager --disable <repository>`
+
+表格示例：
+
+| 命令                                        | 作用             |
+| ----------------------------------------- | -------------- |
+| dnf list installed                        | 列出当前系统中已安装的软件包 |
+| dnf install <package_name>                | 安装指定软件包        |
+| dnf upgrade                               | 升级所有已安装的软件包    |
+| dnf upgrade <package_name>                | 升级指定软件包        |
+| dnf remove <package_name>                 | 删除指定软件包        |
+| dnf clean all                             | 清除缓存           |
+| dnf search <keyword>                      | 查找软件包          |
+| dnf repolist                              | 列出所有可用的软件源     |
+| dnf config-manager --enable <repository>  | 启用指定软件源        |
+| dnf config-manager --disable <repository> | 禁用指定软件源        |
+
+DNF命令的优点- DNF命令使用简单，易于学习和掌握。
+
+- DNF命令具有依赖解决能力，可以自动解决软件包依赖关系。
+- DNF命令支持插件扩展，可以根据需要自由添加或删除插件。
+- DNF命令速度较快，可以快速安装、更新和卸载软件包。
+- DNF命令支持事务操作，可以在安装或更新软件包时进行事务管理，确保操作的一致性和可靠性。
+
+## 2. DNF命令的基本使用方法
+
+DNF命令的安装方法
+
+- 使用包管理器安装DNF命令（适用于大部分Linux系统）：
+  
+  ```
+  sudo apt-get install dnf
+  ```
+
+- 从DNF官网下载安装包进行安装（适用于Fedora系统）：
+  
+  ```
+  sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+  sudo dnf install dnf
+  ```
+
+- 从源代码编译安装DNF命令：
+  
+  ```
+  git clone https://github.com/rpm-software-management/dnf.git
+  cd dnf
+  sudo python3 setup.py install
+  ```
+
+DNF命令的更新方法
+
+- 使用`dnf update`命令可以更新所有已安装的软件包，示例：
+  
+  ```
+  $ sudo dnf update
+  ```
+
+- 使用`dnf upgrade`命令可以更新所有已安装的软件包，并删除不再需要的包，示例：
+  
+  ```
+  $ sudo dnf upgrade
+  ```
+
+- 使用`dnf install <package>`命令可以安装指定的软件包，示例：
+  
+  ```
+  $ sudo dnf install firefox
+  ```
+
+- 使用`dnf remove <package>`命令可以卸载指定的软件包，示例：
+  
+  ```
+  $ sudo dnf remove firefox
+  ```
+
+- 使用`dnf search <keyword>`命令可以搜索指定关键字的软件包，示例：
+  
+  ```
+  $ sudo dnf search editor
+  ```
+
+- 使用`dnf info <package>`命令可以查看指定软件包的详细信息，示例：
+  
+  ```
+  $ sudo dnf info firefox
+  ```
+
+- 使用`dnf list`命令可以列出所有已安装的软件包，示例：
+  
+  ```
+  $ sudo dnf list
+  ```
+
+- 使用`dnf check-update`命令可以检查是否有可用的软件包更新，示例：
+  
+  ```
+  $ sudo dnf check-update
+  ```
+
+DNF命令的卸载方法- 使用`dnf remove`命令来卸载软件包，例如卸载vim软件包：
+
+```
+dnf remove vim
+```
+
+## 3. DNF命令的高级使用方法
+
+DNF命令的插件管理
+
+- 通过dnf命令安装插件：
+  
+  ```
+  sudo dnf install dnf-plugins-core
+  ```
+
+- 使用dnf命令的插件管理工具来查看和安装插件：
+  
+  ```
+  sudo dnf repolist
+  sudo dnf search <插件名称>
+  sudo dnf info <插件名称>
+  sudo dnf install <插件名称>
+  ```
+
+- 使用dnf命令的“needs-restarting”插件来查看需要重启的服务和进程：
+  
+  ```
+  sudo dnf install dnf-plugin-system-upgrade
+  sudo needs-restarting
+  ```
+
+DNF命令的资源库管理
+
+- 使用dnf命令搜索软件包：
+  
+  ```
+  dnf search package_name
+  ```
+
+- 安装软件包：
+  
+  ```
+  dnf install package_name
+  ```
+
+- 卸载软件包：
+  
+  ```
+  dnf remove package_name
+  ```
+
+- 更新软件包：
+  
+  ```
+  dnf update package_name
+  ```
+
+- 清除dnf缓存：
+  
+  ```
+  dnf clean all
+  ```
+
+表格：
+
+| 命令                       | 功能           |
+| ------------------------ | ------------ |
+| dnf search package_name  | 使用dnf命令搜索软件包 |
+| dnf install package_name | 安装软件包        |
+| dnf remove package_name  | 卸载软件包        |
+| dnf update package_name  | 更新软件包        |
+| dnf clean all            | 清除dnf缓存      |
+
+DNF命令的软件包组管理- 查看已安装的软件包组：`dnf grouplist`
+
+- 安装指定的软件包组：`dnf groupinstall <组名>`
+- 卸载指定的软件包组：`dnf groupremove <组名>`
+- 列出指定软件包组中的软件包：`dnf groupinfo <组名>`
+- 安装指定软件包组中的指定软件包：`dnf groupinstall <组名> <软件包名>`
+- 卸载指定软件包组中的指定软件包：`dnf groupremove <组名> <软件包名>`
+- 更新指定软件包组中的软件包：`dnf groupupdate <组名>`
+
+## 以上是针对DNF命令的基本概述、基本使用方法和高级使用方法的介绍。

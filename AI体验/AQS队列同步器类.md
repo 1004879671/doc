@@ -567,3 +567,575 @@ D
 可以看到，虽然我们在迭代过程中删除了元素"C"，但是输出的结果中仍然包含了"C"这个元素。这是因为CopyOnWriteArrayList在进行迭代的时候，是对原始数据的一个快照进行迭代的，所以在迭代过程中对原始数据进行修改是不会影响迭代结果的。
 
 但是需要注意的是，由于CopyOnWriteArrayList在进行添加、删除等操作时需要对整个数组进行复制，所以在多线程环境下，可能会影响到系统的性能。因此，在并发量较大的情况下，建议使用其他线程安全的集合类。
+
+
+
+
+
+
+
+# 同步容器lock有哪些
+
+## 1. 概述
+同步容器lock是一种用于多线程编程的同步机制，用于保护共享资源，防止多个线程同时访问和修改这些资源。本文将介绍几种常见的同步容器lock。
+
+## 2. ReentrantLock
+
+
+ReentrantLock是Java中一个可重入的互斥锁，可以用于保护共享资源。
+- ReentrantLock是Java中一个可重入的互斥锁，可以用于保护共享资源。
+
+  ```java
+  ReentrantLock lock = new ReentrantLock();
+  try {
+      lock.lock();
+      // 访问共享资源
+  } finally {
+      lock.unlock();
+  }
+  ```
+
+ReentrantLock提供了lock()和unlock()方法，用于获取和释放锁。
+- ReentrantLock提供了lock()和unlock()方法，用于获取和释放锁。
+
+```java
+ReentrantLock lock = new ReentrantLock();
+lock.lock();
+try {
+    //执行需要同步的代码块
+} finally {
+    lock.unlock();
+}
+```
+
+在这个例子中，我们使用了ReentrantLock来保护一段需要同步的代码，通过调用lock()方法获取锁，执行代码块，最后通过调用unlock()方法释放锁。这样可以保证同一时刻只有一个线程可以执行这段代码，避免了多线程并发访问的问题。
+
+ReentrantLock还提供了Condition接口，可以用于线程间通信。- ReentrantLock还提供了Condition接口，可以用于线程间通信。
+
+  ```java
+  ReentrantLock lock = new ReentrantLock();
+  Condition condition = lock.newCondition();
+
+  // 线程1
+  lock.lock();
+  try {
+      while (!conditionMet()) {
+          condition.await();
+      }
+      // do something
+  } finally {
+      lock.unlock();
+  }
+
+  // 线程2
+  lock.lock();
+  try {
+      // do something
+      condition.signal();
+  } finally {
+      lock.unlock();
+  }
+  ```
+
+## 3. ReadWriteLock
+
+
+ReadWriteLock是Java中一个读写锁，可以用于提高读操作的并发性能。
+- ReadWriteLock是Java中一个读写锁，可以用于提高读操作的并发性能。
+
+读写锁是一种特殊的锁，它允许多个线程同时读共享变量，但是在写操作时需要互斥地独占锁。在读多写少的场景下，使用读写锁可以提高程序的并发性能。以下是一个使用读写锁的示例：
+
+```java
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+public class ReadWriteLockExample {
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+    private int value = 0;
+
+    public void write(int newValue) {
+        lock.writeLock().lock();
+        try {
+            value = newValue;
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    public int read() {
+        lock.readLock().lock();
+        try {
+            return value;
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+}
+```
+
+在上面的示例中，我们使用了ReentrantReadWriteLock来创建一个读写锁，并使用它来保护一个共享变量value。在写操作时，我们需要先获取写锁，然后对value进行修改。在读操作时，我们需要先获取读锁，然后返回value的值。注意到在读操作时我们使用了try-finally语句来确保在获取读锁后一定会释放读锁。
+
+ReadWriteLock允许多个线程同时读取共享资源，但只允许一个线程写入共享资源。
+- ReadWriteLock允许多个线程同时读取共享资源，但只允许一个线程写入共享资源。
+
+示例：
+
+```java
+// 创建一个读写锁
+ReadWriteLock rwLock = new ReentrantReadWriteLock();
+
+// 读操作
+rwLock.readLock().lock();
+try {
+    // 读取共享资源
+    // ...
+} finally {
+    rwLock.readLock().unlock();
+}
+
+// 写操作
+rwLock.writeLock().lock();
+try {
+    // 写入共享资源
+    // ...
+} finally {
+    rwLock.writeLock().unlock();
+}
+```
+
+- 读写锁可以提高读取共享资源的并发性能，因为多个线程可以同时读取，而不会相互影响。
+- 写操作会独占锁，其他线程无法读取或写入，保证了数据的一致性。
+
+ReadWriteLock提供了读锁和写锁，读锁可以被多个线程同时获取，写锁只能被一个线程获取。- ReadWriteLock提供了读锁和写锁，读锁可以被多个线程同时获取，写锁只能被一个线程获取。
+
+实例：
+
+```java
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+public class ReadWriteLockExample {
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+    private int value = 0;
+
+    public int getValue() {
+        lock.readLock().lock();
+        try {
+            return value;
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    public void increment() {
+        lock.writeLock().lock();
+        try {
+            value++;
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+}
+```
+
+在上面的例子中，我们使用了一个ReadWriteLock来保护一个共享变量value。getValue方法使用了读锁，可以被多个线程同时获取，而increment方法使用了写锁，只能被一个线程获取。这样可以提高并发性能，因为多个线程可以同时读取value的值，而只有一个线程可以修改value的值。
+
+## 4. Semaphore
+
+
+Semaphore是Java中一个计数信号量，可以用于限制同时访问共享资源的线程数量。
+- Semaphore可以用于限制同时访问共享资源的线程数量，例如数据库连接池。
+- Semaphore可以控制同时执行的线程数量，例如限制同时执行的线程数量为5：
+```
+Semaphore semaphore = new Semaphore(5);
+try {
+    semaphore.acquire();
+    // 执行业务逻辑
+} catch (InterruptedException e) {
+    e.printStackTrace();
+} finally {
+    semaphore.release();
+}
+```
+- Semaphore还可以用于实现生产者-消费者模式，例如限制缓冲区中的元素数量：
+```
+Semaphore notFull = new Semaphore(10);
+Semaphore notEmpty = new Semaphore(0);
+Semaphore mutex = new Semaphore(1);
+List<Integer> buffer = new ArrayList<>();
+
+// 生产者线程
+notFull.acquire();
+mutex.acquire();
+buffer.add(1);
+mutex.release();
+notEmpty.release();
+
+// 消费者线程
+notEmpty.acquire();
+mutex.acquire();
+buffer.remove(0);
+mutex.release();
+notFull.release();
+```
+
+Semaphore维护了一个计数器，每当一个线程访问共享资源时，计数器减一；当线程释放共享资源时，计数器加一。
+- Semaphore维护了一个计数器，每当一个线程访问共享资源时，计数器减一；当线程释放共享资源时，计数器加一。
+
+实例：
+
+```python
+from threading import Thread, Semaphore
+import time
+
+def worker(semaphore):
+    semaphore.acquire()
+    print("线程{}获取到了信号量".format(Thread.current_thread().name))
+    time.sleep(2)
+    semaphore.release()
+    print("线程{}释放了信号量".format(Thread.current_thread().name))
+
+if __name__ == "__main__":
+    semaphore = Semaphore(2)
+    for i in range(5):
+        t = Thread(target=worker, args=(semaphore,), name="线程{}".format(i))
+        t.start()
+```
+
+输出：
+
+```
+线程线程0获取到了信号量
+线程线程1获取到了信号量
+线程线程0释放了信号量
+线程线程2获取到了信号量
+线程线程1释放了信号量
+线程线程3获取到了信号量
+线程线程2释放了信号量
+线程线程4获取到了信号量
+线程线程3释放了信号量
+线程线程4释放了信号量
+```
+
+Semaphore提供了acquire()和release()方法，用于获取和释放许可证。- Semaphore提供了acquire()和release()方法，用于获取和释放许可证。
+
+实例：
+
+```python
+from threading import Semaphore, Thread
+import time
+
+semaphore = Semaphore(2)
+
+def worker(id):
+    print(f"Worker {id} is trying to acquire semaphore")
+    semaphore.acquire()
+    print(f"Worker {id} has acquired semaphore")
+    time.sleep(3)
+    print(f"Worker {id} is releasing semaphore")
+    semaphore.release()
+
+for i in range(5):
+    t = Thread(target=worker, args=(i,))
+    t.start()
+```
+
+输出：
+
+```
+Worker 0 is trying to acquire semaphore
+Worker 0 has acquired semaphore
+Worker 1 is trying to acquire semaphore
+Worker 1 has acquired semaphore
+Worker 2 is trying to acquire semaphore
+Worker 3 is trying to acquire semaphore
+Worker 2 has acquired semaphore
+Worker 4 is trying to acquire semaphore
+Worker 3 has acquired semaphore
+Worker 0 is releasing semaphore
+Worker 1 is releasing semaphore
+Worker 2 is releasing semaphore
+Worker 4 has acquired semaphore
+Worker 3 is releasing semaphore
+Worker 4 is releasing semaphore
+```
+
+## 5. CountDownLatch
+
+
+CountDownLatch是Java中一个倒计时器，可以用于等待一组线程执行完毕。
+- CountDownLatch是Java中一个倒计时器，可以用于等待一组线程执行完毕。
+- 使用示例：
+
+```java
+CountDownLatch latch = new CountDownLatch(3); // 创建一个计数器，计数器的值为3
+Thread t1 = new Thread(() -> {
+    System.out.println("线程1执行完毕");
+    latch.countDown(); // 计数器减1
+});
+Thread t2 = new Thread(() -> {
+    System.out.println("线程2执行完毕");
+    latch.countDown(); // 计数器减1
+});
+Thread t3 = new Thread(() -> {
+    System.out.println("线程3执行完毕");
+    latch.countDown(); // 计数器减1
+});
+t1.start();
+t2.start();
+t3.start();
+latch.await(); // 等待计数器归零
+System.out.println("所有线程执行完毕");
+```
+
+CountDownLatch维护了一个计数器，当计数器为0时，await()方法返回。
+- 示例：
+```
+CountDownLatch latch = new CountDownLatch(3);
+
+Thread t1 = new Thread(() -> {
+    System.out.println("Thread 1 is running");
+    latch.countDown();
+});
+
+Thread t2 = new Thread(() -> {
+    System.out.println("Thread 2 is running");
+    latch.countDown();
+});
+
+Thread t3 = new Thread(() -> {
+    System.out.println("Thread 3 is running");
+    latch.countDown();
+});
+
+t1.start();
+t2.start();
+t3.start();
+
+try {
+    latch.await();
+    System.out.println("All threads have finished executing");
+} catch (InterruptedException e) {
+    e.printStackTrace();
+}
+```
+
+- 说明：CountDownLatch是一个同步容器，它维护了一个计数器，当计数器为0时，await()方法返回。在上面的示例中，我们创建了一个CountDownLatch对象，并初始化计数器为3。然后创建了3个线程，每个线程执行时都会调用countDown()方法，将计数器减1。最后在主线程中调用await()方法，等待所有线程执行完毕，当计数器为0时，await()方法返回，程序继续执行。
+
+CountDownLatch提供了countDown()和await()方法，用于减少计数器和等待计数器为0。- 使用CountDownLatch实现线程等待：
+
+```java
+import java.util.concurrent.CountDownLatch;
+
+public class Worker implements Runnable {
+    private final CountDownLatch startLatch;
+    private final CountDownLatch endLatch;
+
+    public Worker(CountDownLatch startLatch, CountDownLatch endLatch) {
+        this.startLatch = startLatch;
+        this.endLatch = endLatch;
+    }
+
+    @Override
+    public void run() {
+        try {
+            startLatch.await(); //等待主线程发起开始信号
+            System.out.println(Thread.currentThread().getName() + "开始工作");
+            Thread.sleep(1000); //模拟工作时间
+            System.out.println(Thread.currentThread().getName() + "工作完成");
+            endLatch.countDown(); //工作完成后减少计数器
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) throws InterruptedException {
+        int workerNum = 5;
+        CountDownLatch startLatch = new CountDownLatch(1); //开始信号计数器
+        CountDownLatch endLatch = new CountDownLatch(workerNum); //工作完成计数器
+
+        for (int i = 0; i < workerNum; i++) {
+            new Thread(new Worker(startLatch, endLatch), "Worker-" + i).start();
+        }
+
+        System.out.println("主线程发起开始信号");
+        startLatch.countDown(); //发起开始信号
+        endLatch.await(); //等待所有线程工作完成
+        System.out.println("所有工作完成");
+    }
+}
+```
+
+- 使用CountDownLatch实现高并发：
+
+```java
+import java.util.concurrent.CountDownLatch;
+
+public class Main {
+    public static void main(String[] args) throws InterruptedException {
+        int threadNum = 100;
+        CountDownLatch startLatch = new CountDownLatch(1); //开始信号计数器
+        CountDownLatch endLatch = new CountDownLatch(threadNum); //工作完成计数器
+
+        for (int i = 0; i < threadNum; i++) {
+            new Thread(() -> {
+                try {
+                    startLatch.await(); //等待开始信号
+                    System.out.println(Thread.currentThread().getName() + "开始工作");
+                    Thread.sleep(1000); //模拟工作时间
+                    System.out.println(Thread.currentThread().getName() + "工作完成");
+                    endLatch.countDown(); //工作完成后减少计数器
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }, "Thread-" + i).start();
+        }
+
+        System.out.println("开始高并发工作");
+        startLatch.countDown(); //发起开始信号
+        endLatch.await(); //等待所有线程工作完成
+        System.out.println("所有工作完成");
+    }
+}
+```
+
+## 6. CyclicBarrier
+
+
+CyclicBarrier是Java中一个循环屏障，可以用于等待一组线程到达某个状态。
+- CyclicBarrier是Java中一个循环屏障，可以用于等待一组线程到达某个状态。
+  ```
+  CyclicBarrier barrier = new CyclicBarrier(3);
+  Runnable task = () -> {
+      try {
+          System.out.println(Thread.currentThread().getName() + " is waiting at the barrier.");
+          barrier.await();
+          System.out.println(Thread.currentThread().getName() + " has crossed the barrier.");
+      } catch (InterruptedException | BrokenBarrierException e) {
+          e.printStackTrace();
+      }
+  };
+  new Thread(task, "Thread 1").start();
+  new Thread(task, "Thread 2").start();
+  new Thread(task, "Thread 3").start();
+  ```
+  输出：
+  ```
+  Thread 1 is waiting at the barrier.
+  Thread 2 is waiting at the barrier.
+  Thread 3 is waiting at the barrier.
+  Thread 1 has crossed the barrier.
+  Thread 3 has crossed the barrier.
+  Thread 2 has crossed the barrier.
+  ```
+
+CyclicBarrier维护了一个计数器和一个屏障点，当计数器为0时，所有线程都到达屏障点。
+- CyclicBarrier维护了一个计数器和一个屏障点，当计数器为0时，所有线程都到达屏障点。
+
+  ```java
+  // 创建一个CyclicBarrier，指定需要等待的线程数为3
+  CyclicBarrier barrier = new CyclicBarrier(3);
+  
+  // 创建3个线程，都会在barrier.await()处等待
+  Thread thread1 = new Thread(() -> {
+      System.out.println("Thread 1 is waiting at the barrier.");
+      try {
+          barrier.await(); // 等待其他线程到达屏障点
+      } catch (InterruptedException | BrokenBarrierException e) {
+          e.printStackTrace();
+      }
+      System.out.println("Thread 1 passed the barrier.");
+  });
+  
+  Thread thread2 = new Thread(() -> {
+      System.out.println("Thread 2 is waiting at the barrier.");
+      try {
+          barrier.await(); // 等待其他线程到达屏障点
+      } catch (InterruptedException | BrokenBarrierException e) {
+          e.printStackTrace();
+      }
+      System.out.println("Thread 2 passed the barrier.");
+  });
+  
+  Thread thread3 = new Thread(() -> {
+      System.out.println("Thread 3 is waiting at the barrier.");
+      try {
+          barrier.await(); // 等待其他线程到达屏障点
+      } catch (InterruptedException | BrokenBarrierException e) {
+          e.printStackTrace();
+      }
+      System.out.println("Thread 3 passed the barrier.");
+  });
+  
+  // 启动3个线程
+  thread1.start();
+  thread2.start();
+  thread3.start();
+  
+  // 输出：
+  // Thread 1 is waiting at the barrier.
+  // Thread 2 is waiting at the barrier.
+  // Thread 3 is waiting at the barrier.
+  // Thread 1 passed the barrier.
+  // Thread 2 passed the barrier.
+  // Thread 3 passed the barrier.
+  ```
+
+CyclicBarrier提供了await()方法，用于等待所有线程到达屏障点。- CyclicBarrier提供了await()方法，用于等待所有线程到达屏障点。
+
+实例：
+
+```java
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+
+public class CyclicBarrierExample {
+
+    public static void main(String[] args) {
+        int parties = 3;
+        Runnable barrierAction = () -> System.out.println("All parties have arrived at the barrier");
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(parties, barrierAction);
+
+        Thread t1 = new Thread(new Worker(cyclicBarrier), "Thread 1");
+        Thread t2 = new Thread(new Worker(cyclicBarrier), "Thread 2");
+        Thread t3 = new Thread(new Worker(cyclicBarrier), "Thread 3");
+
+        t1.start();
+        t2.start();
+        t3.start();
+    }
+
+    static class Worker implements Runnable {
+        private final CyclicBarrier cyclicBarrier;
+
+        public Worker(CyclicBarrier cyclicBarrier) {
+            this.cyclicBarrier = cyclicBarrier;
+        }
+
+        @Override
+        public void run() {
+            try {
+                System.out.println(Thread.currentThread().getName() + " has arrived at the barrier");
+                cyclicBarrier.await();
+                System.out.println(Thread.currentThread().getName() + " has passed the barrier");
+            } catch (InterruptedException | BrokenBarrierException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
+
+输出结果：
+
+```
+Thread 1 has arrived at the barrier
+Thread 2 has arrived at the barrier
+Thread 3 has arrived at the barrier
+All parties have arrived at the barrier
+Thread 3 has passed the barrier
+Thread 2 has passed the barrier
+Thread 1 has passed the barrier
+```

@@ -1,5 +1,3 @@
-
-
 # Java设计模式汇总
 
 ## 1. 创建型模式
@@ -316,11 +314,11 @@ public class Singleton {
 
 可配置的建造者模式
 
-### 1.1 工厂模式
+### 工厂模式
 
-- 可配置的建造者模式
-  
-  ```
+可配置的建造者模式
+
+- ```
   public interface Builder {
       void buildPartA();
       void buildPartB();
@@ -494,34 +492,6 @@ public class Test {
 
 ### 2.2 装饰器模式
 
-- 接口适配器模式
-  
-  ```
-  public interface Target {
-      void request();
-  }
-  
-  public class Adaptee {
-      public void specificRequest() {
-          System.out.println("Adaptee specificRequest");
-      }
-  }
-  
-  public class Adapter extends Adaptee implements Target {
-      @Override
-      public void request() {
-          specificRequest();
-      }
-  }
-  
-  public class Client {
-      public static void main(String[] args) {
-          Target target = new Adapter();
-          target.request();
-      }
-  }
-  ```
-
 - 装饰器模式
   
   ```
@@ -582,8 +552,9 @@ public class Test {
       }
   }
   ```
+  
 
-装饰器模式
+
 
 ### 2.3 代理模式
 
